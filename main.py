@@ -1,55 +1,16 @@
 import sys
-import sqlite3
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
-from task_dialog import TaskDialog  # импортируем твой диалог
+from PyQt6.QtWidgets import QApplication
+from task_manager_window import TaskManagerWindow
+from task_manager import TaskManager
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("TaskMaster")
+def main():
+    app = QApplication(sys.argv)
 
-        # Кнопка "Добавить задачу"
-        self.button = QPushButton("Добавить задачу")
-        self.button.clicked.connect(self.open_task_dialog)
+    task_manager = TaskManager()
+    window = TaskManagerWindow(task_manager)
+    window.show()
 
-        # Оформление
-        layout = QVBoxLayout()
-        layout.addWidget(self.button)
+    sys.exit(app.exec())
 
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
-
-    def open_task_dialog(self):
-        dialog = TaskDialog()
-        if dialog.exec():  # Если нажали "Сохранить"
-            data = dialog.get_data()
-            self.save_to_db(data)
-
-    def save_to_db(self, data):
-        conn = sqlite3.connect("tasks.db")
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            INSERT INTO tasks (title, description, category, priority, deadline, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
-        """, (
-            data['title'],
-            data['description'],
-            data['category'],
-            data['priority'],
-            data['deadline'],
-            data['status']
-        ))
-
-        conn.commit()
-        conn.close()
-        print("Задача сохранена!")
-
-# Запуск
-app = QApplication(sys.argv)
-window = MainWindow()
-window.show()
-sys.exit(app.exec())
-
-
+if __name__ == "__main__":
+    main()

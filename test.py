@@ -1,6 +1,6 @@
 import sqlite3
-from task_dialog import TaskDialog  # Импортируем TaskDialog
-from task_dao import TaskDAO
+from task_manager_window import TaskDialog  # Импортируем TaskDialog
+from task_manager import TaskDAO
 def check_tasks():
     conn = sqlite3.connect("tasks.db")
     cursor = conn.cursor()
