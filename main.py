@@ -1,28 +1,55 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
-from task_dialog import TaskDialog  # Импортируем TaskDialog
+import sqlite3
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from task_dialog import TaskDialog  # импортируем твой диалог
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("TaskMaster")
-        self.setGeometry(100, 100, 600, 400)
 
-        # Кнопка для открытия окна добавления/редактирования задачи
-        self.openDialogButton = QPushButton("Добавить задачу", self)
-        self.openDialogButton.clicked.connect(self.open_task_dialog)
-        self.openDialogButton.setGeometry(100, 100, 200, 50)
+        # Кнопка "Добавить задачу"
+        self.button = QPushButton("Добавить задачу")
+        self.button.clicked.connect(self.open_task_dialog)
+
+        # Оформление
+        layout = QVBoxLayout()
+        layout.addWidget(self.button)
+
+        container = QWidget()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
 
     def open_task_dialog(self):
-        dialog = TaskDialog()  # Создаём объект диалогового окна
-        if dialog.exec():  # Если окно было закрыто с помощью кнопки "Сохранить"
-            task_data = dialog.get_data()  # Получаем введённые данные
-            print(task_data)  # Выводим данные (или сохраняем их в БД)
+        dialog = TaskDialog()
+        if dialog.exec():  # Если нажали "Сохранить"
+            data = dialog.get_data()
+            self.save_to_db(data)
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
-import sqlite3
+    def save_to_db(self, data):
+        conn = sqlite3.connect("tasks.db")
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO tasks (title, description, category, priority, deadline, status, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+        """, (
+            data['title'],
+            data['description'],
+            data['category'],
+            data['priority'],
+            data['deadline'],
+            data['status']
+        ))
+
+        conn.commit()
+        conn.close()
+        print("Задача сохранена!")
+
+# Запуск
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+sys.exit(app.exec())
+
 

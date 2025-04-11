@@ -22,11 +22,23 @@ class TaskDAO:
             )
         ''')
         conn.commit()
-        conn.close()
+
 
     def add_task(self, task_data):
-        """Добавляем новую задачу в базу данных"""
-        conn = sqlite3.connect(self.db_name)
-        cursor = conn.cursor()
+        with sqlite3.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO tasks (title, description, category, priority, deadline, status, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                task_data['title'],
+                task_data['description'],
+                task_data['category'],
+                task_data['priority'],
+                task_data['deadline'],
+                task_data['status'],
+                task_data['created_at']
+            ))
+            conn.commit()
 
-        conn.close()
+
