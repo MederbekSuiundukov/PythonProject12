@@ -46,7 +46,7 @@ To create a cross-platform desktop application for personal task tracking, offer
 
 ---
 
-![App Screenshot](images/project.png)
+![App Screenshot](images/project.jpeg)
 
 
 https://docs.google.com/document/d/1lEOGuWaWH5V150TeIAGusEk8mtXmWkpEB23pYIH-X5s/edit?tab=t.0
