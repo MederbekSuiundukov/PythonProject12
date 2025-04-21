@@ -31,7 +31,16 @@ To create a cross-platform desktop application for personal task tracking, offer
 - **PyQt6** – for the graphical user interface  
 - **SQLite** – for data storage  
 - **DBeaver** – for database management  
-
+---
+## 📁 Структура проекта
+TaskManagement/
+│
+├── main.py
+├── style.qss
+├── task_dialog.py
+├── task_manager_window.py
+├── task_model.py
+├── tasks.db
 
 ---
 
